@@ -14,8 +14,8 @@ int inputC[3] = {0, 0, 0};
 int previous_tick_l = 0;
 int previous_tick_r = 0;
 float prev_time = 0;
-float Radius = .02154;
-float L = .1645;
+float Radius = .0275;//.0269875;
+float L = .11;
 float lx = -.1714;
 float ly = .0001;
 //float Left_Wheel_Velocity = 0;
@@ -54,8 +54,8 @@ task dead_reckoning()
 		float cur_r = nMotorEncoder[motorB];
 		float cur_l = nMotorEncoder[motorC];
     writeDebugStreamLine("cur_r = %f, cur_l = %f", cur_r, cur_l);
-		float vl = (cur_l - previous_tick_l)/dt*(PI/180)/3;
-		float vr = (cur_r - previous_tick_r)/dt*(PI/180)/3;
+		float vl = (cur_l - previous_tick_l)/dt*(PI/180);
+		float vr = (cur_r - previous_tick_r)/dt*(PI/180);
 
 		//Left_Wheel_Velocity = vl;
 		//Right_Wheel_Velocity = vr;
@@ -205,15 +205,18 @@ task main()
 	//getInput();
 
 	draw_grid();
-	while (SensorValue(touchSensor) == 0) {
-	}
+
 	wait1Msec(500);
 
 	time1[T1] = 0;
 	StartTask(dead_reckoning);
-	motor[motorB] = 50;
-	motor[motorC] = 40;
-	wait1Msec(5000);
+	motor[motorB] = 30;
+	motor[motorC] = -30;
+	wait1Msec(3000);
+	motor[motorB] = 0;
+	motor[motorC] = 0;
+	while (SensorValue(touchSensor) == 0) {
+	}
 	motor[motorB] = -80;
 	motor[motorC] = 60;
 	wait1Msec(5000);
