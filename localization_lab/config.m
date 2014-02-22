@@ -15,9 +15,9 @@ global ROBOTMODEL % model of what the robot's foot print looks like,
                   % when in doubt make this bigger then the actuall robots
                   % footprint. Used to calculate the robots configuration space. 
 
-ROBOTMODEL = [-.05, -.05,    0 , 0.05,  0;
-               .05, -.05, -0.05, 0   , 0.05;
-                 1,    1,     1,    1, 1 ];                
+ROBOTMODEL = [-.05, -.05, 0 , 0.05, 0;
+    .05, -.05, -0.05, 0 ,0.05;
+    1,1,1,1,1];                
                   
                   
 %Global values are set, must happen before any other funciton are called

@@ -2,7 +2,7 @@
 %speed is the foward spped of the robot, turning is the angular
 %acceleration desired of the robot, dt is the amount of time which you wish
 %to have the robot drive for.
-function [B_ticks,C_ticks] = drive(speed,turning,dt)
+function [displacment] = drive(speed,turning,dt)
 %implment foward kinematics here %%%%TODO 
 leftSpeed = 0;
 rightSpeed = 0;
@@ -18,6 +18,8 @@ mC.SendToNXT();
 pause(dt);
 B_ticks = mB.ReadFromNXT().position;
 C_ticks = mC.ReadFromNXT().position;
+
+%implment kinematics to get displament
 
 end
 

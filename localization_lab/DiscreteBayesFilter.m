@@ -75,7 +75,8 @@ classdef DiscreteBayesFilter < handle
             xM = obj.probabilities.*obj.xWeights;
             yM = obj.probabilities.*obj.yWeights;
             tM = obj.probabilities.*obj.tWeights;
-            m = [sum(xM(:)); sum(yM(:)); sum(tM(:))];
+            p = max(obj.probabilities);
+            m = [sum(xM(:)); sum(yM(:)); sum(tM(:)); p];
         end
         
         % Apply the transition function to the filter.

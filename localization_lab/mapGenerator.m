@@ -9,24 +9,22 @@ map = zeros(30,10);
 map = zeros(width/DX,height/DY);
 map = addBorder(map);
 
-%map = addTennisBall(map,1.1,.45);
-%map = addTennisBall(map,.3,.45);
-%map = addTennisBall(map,.5,.45);
 
-map = addBox(map,0.5,0.4,1);
-map = addBox(map,1.9,0.3,0);
+%lower box
+map = addBox(map,0.35,0.4,1);
+%top box
+map = addBox(map,1.98,0.3,0);
+%middle box
 map = addBox(map,1.4,.6,0);
 
-%map = addTennisBall(map,1.6,1.2);
-%map = addTennisBall(map,1,.9);
-map = addTennisBall(map,1.46,.1);
-map = addTennisBall(map,2.4,.1);
-map = addTennisBall(map,.2,.9);
-map = addTennisBall(map,.4,.6);
-map = addTennisBall(map,1,1);
-map = addTennisBall(map,1.2,.5);
-map = map';
 
+%map = addTennisBall(map,1.46,.1);
+map = addTennisBall(map,2.4,.1);
+map = addTennisBall(map,.68,1);
+map = addTennisBall(map,1,.6);
+map = addTennisBall(map,1.44,.1);
+map = addTennisBall(map,.1,.3);
+map = map';
 
 end
 
