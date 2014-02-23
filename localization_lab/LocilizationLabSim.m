@@ -4,7 +4,8 @@ function [] = LocilizationLabSim()
     %
     % Written by Trevor Decker (tdecker@andrew.cmu.edu) for CMU's 16-311
     % v0.1 2/21/2014
-    
+global DX;
+global DY;
 global DTH;      %Discretization along th
 global ROBOTMODEL;
 global MAXERRORTH;
@@ -20,18 +21,24 @@ finish = [0.2,0.2,1.0];
 finish(3) = wrapTo2Pi(finish(3)); %for end error checking
 
 map = mapGenerator;
+
+
 plotMap(map,0);
-pause();%temp
-assert(1==2)
+
+
 configMap = calculateConfigurationSpace(map,1);
+
+
 
 %sets up the robot 
 r = robot(start(1),start(2),start(3));
 r.setModel(ROBOTMODEL,'r');
 
 %pM stands for probability map 
-pM = ones(size(map,1),size(map,2),2*pi/DTH);
+pM = ones(size(map,1),size(map,2),round(2*pi/DTH));
 pM = normilize(pM);
+
+
 
 %the best guess of where we currently are
 [belivedPose(1),belivedPose(2),belivedPose(3),p] = getBestDistribution(pM);
@@ -47,6 +54,8 @@ else
     end
 end
 
+
+
 [pM,r] =move(pM,[0,0,0],map,r);
 gui(r,map,pM)
 
@@ -57,6 +66,8 @@ while(1)
     %while(size(path,1) > 0 )
     %the best guess of where we currently are
     [belivedPose(1),belivedPose(2),belivedPose(3),p] = getBestDistribution(pM);
+%     dispPose = belivedPose./DX
+%    map(round(belivedPose(1)/DX), round(belivedPose(2)/DY))
     if p < .0001
         dPose = lostMotion();
         %determines the angle we should be at
@@ -93,7 +104,7 @@ function [pM,r] = update(r,dPose,map,pM)
         dPose(3) = -wrapToPi(r.pose(3) - atan2(-dPose(2),-dPose(1)));
         [pM,r] =move(pM,dPose,map,r);
         gui(r,map,pM)
-        pause(.01)l
+        pause(.01);
 end
 
 
@@ -108,6 +119,7 @@ global STEPERROR
 %caps max attempted motion
 MAXSPEED = DX;
 MAXDTH = 10*DTH;
+
 if(abs(dPose(3)) > MAXDTH)
     dPose(3) = MAXDTH*dPose(3)/abs(dPose(3));
     dPose(1) = 0;
@@ -122,9 +134,10 @@ else
     end
 end
 dPose(3) = -dPose(3);
-r.pose(1:3) =r.pose(1:3) -  dPose;
+r.pose
+dPose
+r.pose(1:3) = r.pose(1:3) -  dPose;
 r.pose(3) = wrapTo2Pi(r.pose(3));
-
 measurment = r.Sense(map);
 pM = transitionModel(pM,dPose');
 for i = 1:size(pM,3)
@@ -133,7 +146,6 @@ end
 pM = normilize(pM); %normilzes
 pM = observationModel(map,measurment,pM);
 pM = normilize(pM); %normilzes
-
 end
 
 

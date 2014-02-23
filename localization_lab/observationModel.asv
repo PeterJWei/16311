@@ -19,24 +19,13 @@ tennisball_map = double(map == 2);
 
 
 
-H = fspecial('gaussian', 10, .5);
+H = fspecial('gaussian', 5, .1);
 
 locations = convn(tennisball_map, H, 'same');
-[numMeasurments,~] = size(measurement);
-if(numMeasurments == 0)
-    measPM = ones(m,n,p);    
-else
-    measPM = zeros(m,n,p);
-end
-for mi = 1:numMeasurments
-    mask = makeCircleMask(measurement(mi,2));
-    convloc = convn(locations,mask,'same');
-    for i = 1:p
-        measPM(:,:,i) = measPM(:,:,i) + convloc;
-    end
-end
-measPM = normilize(measPM);
-pM = measPM .* pM;
+mask = makeCircleMask(10);
+convloc = convn(locations,mask,'same');
+for i = 1:
+pM = convloc .* pM;
 
 
 
@@ -44,9 +33,9 @@ pM = measPM .* pM;
 end
 
 function [mask] = makeCircleMask(radius)
-   mask = fspecial('disk',radius+1);
+   mask = fspecial('disk',radius);
    inner = zeros(size(mask));
-   inner(2:end-1,2:end-1) = fspecial('disk',radius);
+   inner(2:end-1,2:end-1) = fspecial('disk',radius-1);
    mask = mask - inner;
    mask = mask > 0;
 end

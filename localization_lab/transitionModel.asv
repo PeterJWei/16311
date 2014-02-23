@@ -3,7 +3,7 @@
 function [pM] = transitionModel(pM,dPose)
 global DX;
 global DY;
-global DTH;
+global DTH;.05
 shift = round(dPose./[DX; DY; DTH]);
 mask = makeTransMask(shift);
 pM = convn(pM, mask, 'same');
@@ -28,12 +28,12 @@ end
 end
 
 function [mask] = makeTransMask(shift)
-   sigma = 2;
-   gausssize = 7;
+   sigma = .5;
+   gausssize = 5;
    H = fspecial('gaussian',gausssize,sigma);
    mask = zeros(2*(abs(shift(1))+gausssize)+1,2*(abs(shift(2))+gausssize)+1);
-   centerptx = shift(1)+gausssize+1;
-   centerpty = shift(2)+gausssize+1;
+   centerptx = shift(1)+gaussize+1;
+   centerpty = shift(2)+gaussize+1;
    gausscenterx = centerptx + shift(1);
    gausscentery = centerpty + shift(2);
    mask((gausscenterx-floor(gausssize/2)):(gausscenterx+floor(gausssize/2)),...

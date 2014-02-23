@@ -1,7 +1,7 @@
 function config()
 global DX        %discretization along x axis
-global DY;       %discretization along y axis
-global DTH;      %discretization along th
+global DY       %discretization along y axis
+global DTH      %discretization along th
 global MAXDTH    %max speed at which we allow for the robot to move
 global MAXSPEED  %max speed at which we allow the robot to translate
 global MAXD      %MAXIMUM distince that the sensor can read
