@@ -18,12 +18,14 @@ function [x,y,th,p] = getBestDistribution(pM)
                     x = i*DX;
                     y = j*DY;
                     th = k*DTH;
+                    %th = wrapTo2Pi(th + pi);
                     p = best;
                     return
                 end
             end
         end
     end
+    
 
 end
 

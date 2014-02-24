@@ -42,10 +42,11 @@ pM = normilize(pM);
 
 %the best guess of where we currently are
 [belivedPose(1),belivedPose(2),belivedPose(3),p] = getBestDistribution(pM);
+
 if p < .0001
     %we are not confident about our current position so planning based on
     %our best guess will not be very helpful.
-    dPose = lostMotion();
+    dPose = lostMotion(belivedPose);
 else
     gui(r,map,pM)
     path = WaveFrontPlanner(configMap,[belivedPose(1),belivedPose(2)],finish);
@@ -60,28 +61,43 @@ end
 gui(r,map,pM)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%  sweep loop %%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+dPose = [0,0,.05];
+for i = 1:100
+   [pM,r] = updateSpin(r,dPose,map,pM);
+   %pause;
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%  search loop %%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 while(1)
     %while(size(path,1) > 0 )
     %the best guess of where we currently are
     [belivedPose(1),belivedPose(2),belivedPose(3),p] = getBestDistribution(pM);
-%     dispPose = belivedPose./DX
+     dispPose = wrapToPi(belivedPose(3))/DTH
 %    map(round(belivedPose(1)/DX), round(belivedPose(2)/DY))
+    r.pose
+    p
     if p < .0001
-        dPose = lostMotion();
+        dPose = [0,0,.05];
         %determines the angle we should be at
-        [pM,r] = update(r,dPose,map,pM);
+        [pM,r] = updateSpin(r,dPose,map,pM);
     elseif atDesiredLocation(belivedPose,finish)
         path = WaveFrontPlanner(configMap,[belivedPose(1),belivedPose(2)],finish);
         if size(path,1) < 1 || (path(1,1) == -1 && length(path) == 1)
-            dPose = lostMotion();
+            dPose = [0,0,.05];
+            [pM,r] = updateSpin(r,dPose,map,pM);
         else
-            dPose = r.pose(1:3) - [path(1,1), path(1,2), r.pose(3)];
+            dPose = belivedPose(1:3) - [path(1,1), path(1,2), belivedPose(3)];
+            dPose = round(dPose./[DX DY DTH]);
+            dPose = dPose.*[DX DY DTH];
+            %determines the angle we should be at
+%             dPose(3) = -wrapToPi(r.pose(3) - atan2(-dPose(2),-dPose(1)));
+            [pM,r] = update(r,dPose,map,pM);
         end
-        %determines the angle we should be at
-        dPose(3) = -wrapToPi(r.pose(3) - atan2(-dPose(2),-dPose(1)));
-        [pM,r] = update(r,dPose,map,pM);
+
     else
          dth = wrapToPi(belivedPose(3) - finish(3));
          if( abs(dth) < MAXERRORTH)
@@ -91,8 +107,7 @@ while(1)
              dPose =  [0,0,-dth];
              [pM,r] = update(r,dPose,map,pM);
              
-        end
-        
+         end
     end
 end
 gui(r,map,pM)
@@ -107,6 +122,12 @@ function [pM,r] = update(r,dPose,map,pM)
         pause(.01);
 end
 
+function [pM, r] = updateSpin(r, dPose, map, pM)
+    dPose(3) = -wrapToPi(dPose(3));
+    [pM, r] = move(pM, dPose, map,r);
+    gui(r,map,pM)
+    pause(.01);
+end
 
 % causes for the robot to sense and move based on the input vector dPose
 % which is the desired difrence in pose
@@ -134,23 +155,28 @@ else
     end
 end
 dPose(3) = -dPose(3);
-r.pose
-dPose
+
 r.pose(1:3) = r.pose(1:3) -  dPose;
 r.pose(3) = wrapTo2Pi(r.pose(3));
 measurment = r.Sense(map);
+
 pM = transitionModel(pM,dPose');
 for i = 1:size(pM,3)
     pM(:,:,i) = pM(:,:,i) + STEPERROR.*(~map);
 end
 pM = normilize(pM); %normilzes
-pM = observationModel(map,measurment,pM);
+% pause;
+pM = observationModel(map,measurment,pM,r);
 pM = normilize(pM); %normilzes
+% pause;
+
 end
 
 
 %motion that should happen when we belive that the robot is lost 
-function dPose = lostMotion()
-    dPose = rand(1,3);
+function dPose = lostMotion(oldPose)
+    global DTH
+   % dPose = [cos(oldPose(3)+DTH) , sin(oldPose(3)+DTH) , 0];% rand(1,3);
+   dPose = [.05,0,0];
 end
 

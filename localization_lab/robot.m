@@ -54,6 +54,7 @@ classdef robot < handle
                    if(x>0 && x < size(map,1) && y > 0 && y < size(map,2))
                        if(map(x,y) == 2)
                            objects = cat(1,objects,[th, d]);%d %bearing only instead of distince
+                           map(x,y) = 0;
                        end
                     if(map(x,y) == 1)
                         %hit a wall

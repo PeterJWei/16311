@@ -4,38 +4,29 @@ function [pM] = transitionModel(pM,dPose)
 global DX;
 global DY;
 global DTH;
-shift = round(dPose./[DX; DY; DTH]);
+shift = -1*round(dPose./[DX; DY; DTH]);
+if(shift(1) ~=0 || shift(2) ~=0)
+ %   shift(3)=0;
+end
+pM = circshift(pM,[0,0,shift(3)]);
+
 mask = makeTransMask(shift);
 pM = convn(pM, mask, 'same');
+shift = shift;
+
 end
 
-function [valid] = isValidPos(pM, loc)
-[m,n,p] = size(pM);
-locx = loc(1);
-locy = loc(2);
-locth = loc(3);
-valid = true;
-if(locx < 1 || locx > m)
-    valid = false;
-end
-if(locy < 1 || locy > n)
-    valid = false;
-end
-if(locth < 1 || locth > p)
-    valid = false;
-end
-    
-end
 
 function [mask] = makeTransMask(shift)
-   sigma = 2;
-   gausssize = 7;
+   sigma = .5;
+   gausssize = 5;
    H = fspecial('gaussian',gausssize,sigma);
+   
    mask = zeros(2*(abs(shift(1))+gausssize)+1,2*(abs(shift(2))+gausssize)+1);
    centerptx = shift(1)+gausssize+1;
    centerpty = shift(2)+gausssize+1;
-   gausscenterx = centerptx + shift(1);
-   gausscentery = centerpty + shift(2);
+   gausscenterx = centerptx - shift(1);
+   gausscentery = centerpty - shift(2);
    mask((gausscenterx-floor(gausssize/2)):(gausscenterx+floor(gausssize/2)),...
         (gausscentery-floor(gausssize/2)):(gausscentery+floor(gausssize/2))) = H;
      
