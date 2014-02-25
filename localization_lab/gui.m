@@ -14,7 +14,7 @@ br.setModel([-.05, -.05, 0 , 0.05, 0;
              1,1,1,1,1],'g');
          
 br.DrawRobot();
- th = mod(round(th/DTH)-1,size(pMap,3) -1)+1
+ th = mod(round(th/DTH)-1,size(pMap,3) -1)+1;
 subplot(1,2,2)
 
 %  maxPMap = max(pMap,[],3);

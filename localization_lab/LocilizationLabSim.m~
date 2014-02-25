@@ -76,9 +76,10 @@ while(1)
     %while(size(path,1) > 0 )
     %the best guess of where we currently are
     [belivedPose(1),belivedPose(2),belivedPose(3),p] = getBestDistribution(pM);
-%      dispPose = wrapToPi(belivedPose(3))/DTH;
+     dispPose = wrapToPi(belivedPose(3))/DTH
 %    map(round(belivedPose(1)/DX), round(belivedPose(2)/DY))
-
+    belivedPose
+    p
     if p < .0001
         dPose = [0,0,.05];
         %determines the angle we should be at

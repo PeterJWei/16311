@@ -22,10 +22,8 @@ locations = tennisball_map;
 [numMeasurments,~] = size(measurement);
 if(numMeasurments == 0)
     measPM = ones(m,n,p);
-    'no tennis ball';
 else
     measPM = zeros(m,n,p);
-    'Tennis Ball found';
 end
 for mi = 1:numMeasurments
 %     mask = makeCircleMask(round(measurement(mi,2)/DX));
