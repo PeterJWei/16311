@@ -16,8 +16,8 @@ config();
 %%%%%%%%%%%%%%%%%%  SETUP %%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %coordinates x,y,th
-start  = [0.9,1.0,pi/2];
-finish = [0.2,0.2,1.0];
+start  = [0.9,1.0,pi/2];%[0.5,1.3,1.0];%
+finish = [0.2,0.2,1.0]%
 finish(3) = wrapTo2Pi(finish(3)); %for end error checking
 
 map = mapGenerator;
@@ -110,6 +110,7 @@ while(1)
              
          end
     end
+    
 end
 gui(r,map,pM)
 calculateScore(r,finish);
